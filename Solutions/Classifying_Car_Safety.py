@@ -58,11 +58,19 @@ print('Accuracy: ',acc)
 
 #region Testing Our Model
 
+# We create a names list so that we can convert our integer predictions into 
+# their string representation 
+
 predicted = model.predict(x_test)
 names = ["unacc", "acc", "good", "vgood"]
 
+# This will display the predicted class, our data and the actual class
 for x in range(len(predicted)):
-    print("Predicted: ", names[predicted[x]], "Data: ", x_test[x], "Actual: ", names[y_test[x]])
+    print("Predicted: ", names[predicted[x]], '\n', "Data: ", x_test[x], '\n', "Actual: ", names[y_test[x]])
+    
+    # Now we will we see the neighbors of each point in our testing data
+    n = model.kneighbors([x_test[x]], 9, True)
+    print("N: ", n)
 
 #endregion
 
