@@ -19,7 +19,6 @@ k = 10
 # Define how many samples and features we have by getting the data shape
 samples, features = data.shape
 
-print(data.shape)
 
 #endregion
 
@@ -39,5 +38,11 @@ def bench_k_means(estimator, name, data):
 
 #endregion
 
+#region Training the Model
 
+# Creating a K Means classifier, then pass that classifier to he function we created above to score and train it
+clf = KMeans(n_clusters=k, init="random", n_init=10)
+bench_k_means(clf, "1", data)
+
+#endregion
 
