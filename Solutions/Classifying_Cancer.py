@@ -35,3 +35,17 @@ acc = metrics.accuracy_score(y_test, y_pred) # Test them against our correct val
 print('Accuracy: ',acc)
 
 #endregion
+
+#region Testing Our Model
+
+# We create a names list so that we can convert our integer predictions into 
+# their string representation 
+
+predicted = clf.predict(x_test)
+names = ["malignant", "benign"]
+
+# This will display the predicted class, our data and the actual class
+for x in range(len(predicted)):
+    print("Predicted: ", names[predicted[x]], '\n', "Actual: ", names[y_test[x]])
+
+#endregion
