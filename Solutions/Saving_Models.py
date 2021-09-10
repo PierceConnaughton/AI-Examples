@@ -94,13 +94,3 @@ print("-------------------------")
 predicted= linear.predict(x_test)
 for x in range(len(predicted)):
     print(predicted[x], x_test[x], y_test[x])
-
-
-
-# Drawing and plotting model
-plot = "failures"
-plt.scatter(data[plot], data["G3"])
-plt.legend(loc=4)
-plt.xlabel(plot)
-plt.ylabel("Final Grade")
-plt.show()
