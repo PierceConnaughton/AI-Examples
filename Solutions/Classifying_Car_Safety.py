@@ -21,7 +21,7 @@ print(data.head())  # To check if our data is loaded correctly
 le = preprocessing.LabelEncoder()
 
 
-# fit transform takes a list of each of the cola nd return an array contaning the new values
+# fit transform takes a list of each of the cols and return an array contaning the new values
 buying = le.fit_transform(list(data["buying"]))
 maint = le.fit_transform(list(data["maint"]))
 door = le.fit_transform(list(data["door"]))
@@ -30,12 +30,40 @@ lug_boot = le.fit_transform(list(data["lug_boot"]))
 safety = le.fit_transform(list(data["safety"]))
 cls = le.fit_transform(list(data["class"]))
 
-
 # This recombines data into a feature list and a labels list
 X = list(zip(buying, maint, door, persons, lug_boot, safety))  # Features
 y = list(cls)  # Labels
+
+#endregion
+
+
+#region Split Data
 
 # Then we split our data agian into test and train data
 x_train, x_test, y_train, y_test = sklearn.model_selection.train_test_split(X, y, test_size = 0.1)
 
 #endregion
+
+#region Training KNN Classifier
+
+from sklearn.neighbors import KNeighborsClassifier
+model = KNeighborsClassifier(n_neighbors=9) # We can specify how many neighbours we need to look for as an argument n_neighbours
+
+model.fit(x_train, y_train) # Input Training data into model
+
+acc = model.score(x_test, y_test) # Find accuracy of model
+print('Accuracy: ',acc)
+
+#endregion
+
+#region Testing Our Model
+
+predicted = model.predict(x_test)
+names = ["unacc", "acc", "good", "vgood"]
+
+for x in range(len(predicted)):
+    print("Predicted: ", names[predicted[x]], "Data: ", x_test[x], "Actual: ", names[y_test[x]])
+
+#endregion
+
+

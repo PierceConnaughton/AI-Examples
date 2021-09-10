@@ -19,7 +19,7 @@ data = data[["G1", "G2", "G3", "studytime", "failures", "absences"]]
 
 #endregion
 
-#region Seperate Data
+#region Split Data
 
 # We need to choose what attribute we want to predict
 # This will be known as the label
