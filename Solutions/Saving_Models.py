@@ -1,9 +1,13 @@
-# Import files
-import pandas as pd
+#Import Libraries
 import numpy as np
-import sklearn
+import pandas as pd
 from sklearn import linear_model
+import sklearn
 from sklearn.utils import shuffle
+import matplotlib.pyplot as plt
+from matplotlib import style
+import pickle
+
 
 #region Read and Trim Data
 
@@ -14,8 +18,11 @@ data = pd.read_csv("E:/College/Semester 7/AI/Data/student/student-mat.csv", sep=
 #print out first 5 students
 print(data.head())
 
+predict = "G3"
+
 # This trims down our data so we select on the attributes we want to look at 
 data = data[["G1", "G2", "G3", "studytime", "failures", "absences"]]
+data = shuffle(data) # shuffle the data
 
 #endregion
 
@@ -25,12 +32,9 @@ data = data[["G1", "G2", "G3", "studytime", "failures", "absences"]]
 # This will be known as the label
 # The other attributes that will determine our label are known as features
 # We will the create 2 arrays one has the label inside and the other has the features
-predict = "G3"
+
 X = np.array(data.drop([predict], 1)) # Features
 y = np.array(data[predict]) # Labels
-
-
-
 
 # We then split our data into testing and training 
 # in this case 90% data will be used to train and the other 10% will test
@@ -47,7 +51,6 @@ x_train, x_test, y_train, y_test = sklearn.model_selection.train_test_split(X, y
 linear = linear_model.LinearRegression()
 
 # First Train then Score our models using the arrays we created
-# Train Data is what our AI can already see where as the test data is used for predicting
 linear.fit(x_train, y_train)
 acc = linear.score(x_test, y_test) # acc stands for accuracy 
 
@@ -56,15 +59,48 @@ print('Accuracy: ',acc)
 
 #endregion
 
-#region Predicting Specific Students
+#region Train Model
 
+# Train model multiple times and choose the model with the best score to use
+best = 0
+for _ in range(20):
+    x_train, x_test, y_train, y_test = sklearn.model_selection.train_test_split(X, y, test_size=0.1)
 
-# Printing out the prediction, 
-# then the input [First Semester Grade, Second Semester Grade, Study Time, Failures, Absences], then the actual value
-predictions = linear.predict(x_test) # Gets a list of all predictions
+    linear = linear_model.LinearRegression()
 
-
-for x in range(len(predictions)):
-    print('Predicted Result: ', round(predictions[x]) ,'\n', 'Input Data: ', x_test[x],'\n', 'Actual Result: ', y_test[x])
+    linear.fit(x_train, y_train)
+    acc = linear.score(x_test, y_test)
+    print("Accuracy: " + str(acc))
+    
+    # If the current model has a better score than one we've already trained then save it
+    if acc > best:
+        best = acc
+        #save model to new file
+        with open("studentgrades.pickle", "wb") as f:
+            pickle.dump(linear, f)
 
 #endregion
+
+# Load the model
+pickle_in = open("studentgrades.pickle", "rb")
+linear = pickle.load(pickle_in)
+
+
+print("-------------------------")
+print('Coefficient: \n', linear.coef_)
+print('Intercept: \n', linear.intercept_)
+print("-------------------------")
+
+predicted= linear.predict(x_test)
+for x in range(len(predicted)):
+    print(predicted[x], x_test[x], y_test[x])
+
+
+
+# Drawing and plotting model
+plot = "failures"
+plt.scatter(data[plot], data["G3"])
+plt.legend(loc=4)
+plt.xlabel(plot)
+plt.ylabel("Final Grade")
+plt.show()
